@@ -5,8 +5,27 @@ body {
 }
 
 h1 {
-	color: blue;
+	color: green;
+	font-size: 3em;
 }
 h2 {
-	color: blue;
+	color: red;
+}
+
+#pop.pop_inactive {
+	display: none;
+}
+#pop.pop_active {
+	display: block;
+	position: absolute;
+	width: 50%;
+	height: 50%;
+	top: 20%;
+	left: 25%;
+	border: 3px solid #000;
+	background-color: #c9f;
+	padding: 1em;
+	font-size: 1.5em;
+	color: white;
+	font-weight: bold;
 }

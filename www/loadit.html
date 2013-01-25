@@ -7,34 +7,78 @@
 	<h1>This is some H1 content</h1>
 	<h2>This is some H2 content</h2>
 	
+	<div id="pop" class="pop_inactive">This is some content...</div>
+	
+	<button onclick="showpop()" name="hello">Show Div</button>
+	
 <script>
-liveloadComms = new WebSocket('ws://localhost:88/');
-
-if (liveloadComms) {
-	liveloadComms.onmessage = function (evt) {
-		var message = JSON.parse(evt.data);
-		if (message.location) {
-			console.log()
-		}
-	};
-	
-	// inform the UI
-	liveloadComms.onopen = function(evt) {
-		console.log("websocket connection open");
-	}
-	
-	// inform the UI
-	liveloadComms.onerror = function(evt) {
-		console.log("websocket connection failed");
-		console.log(evt);
-	}
-	
-	// inform the UI
-	liveloadComms.onclose = function(evt) {
-		console.log("websocket connection closed");
-		liveloadComms = null;
+function showpop() {
+	var p = document.getElementById("pop");
+	if (p !== null) {
+		p.className = 'pop_active';
 	}
 }
+</script>
+<script>
+var liveload = {};
+
+function attemptWSConnect() {
+	
+	console.log("Attempting to connect to liveload web socket");
+	liveload.ws = new WebSocket('ws://localhost:88/');
+	
+	if (liveload.ws) {
+		
+		if (liveload.retry) {
+			liveload.retry = null;
+		}
+		
+		liveload.ws.onmessage = function (evt) {
+			var message = JSON.parse(evt.data);
+			if (message.location) {
+				console.log(message);
+				// get all attached stylesheets
+				if (document.styleSheets) {
+					var sheets = document.styleSheets;
+					for (var i=0; i<sheets.length; i++) {
+						if (sheets[i].href.indexOf(message.location[0]) > -1) {
+							console.log("need to reload this");
+							var s = document.styleSheets[i].ownerNode;
+							var newSheet = document.createElement("link");
+							newSheet.href = (s.hrefx || s.href) + "?x=" + Math.random(1024);
+							newSheet.type = "text/css";
+							newSheet.rel = "stylesheet";
+							newSheet.hrefx = s.hrefx || s.href;
+							var pNode = s.parentNode;
+							pNode.removeChild(s);
+							pNode.appendChild(newSheet);
+						}
+						console.log(sheets[i]);
+					}
+				}
+			}
+		};
+		
+		// inform the UI
+		liveload.ws.onopen = function(evt) {
+			console.log("websocket connection open");
+		}
+		
+		// inform the UI
+		liveload.ws.onerror = function(evt) {
+			console.log("websocket connection failed. Attempt reconnect in 5 seconds");
+			console.log(evt);
+		}
+		
+		// inform the UI
+		liveload.ws.onclose = function(evt) {
+			console.log("websocket connection closed");
+			liveload.ws = null;
+			liveload.retry = window.setTimeout(attemptWSConnect, 5000);
+		}
+	}
+}
+attemptWSConnect();
 </script>
 </body>
 </html>

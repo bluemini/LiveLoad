@@ -1,0 +1,12 @@
+/* this is some test CSS for the live load application */
+body {
+	font-family: sans-serif;
+	font-size: 0.65em;
+}
+
+h1 {
+	color: blue;
+}
+h2 {
+	color: blue;
+}

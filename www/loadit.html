@@ -1,0 +1,40 @@
+<html>
+<head>
+	<title>CSS Live Load Test</title>
+	<link rel="stylesheet" type="text/css" href="liveload.css">
+</head>
+<body>
+	<h1>This is some H1 content</h1>
+	<h2>This is some H2 content</h2>
+	
+<script>
+liveloadComms = new WebSocket('ws://localhost:88/');
+
+if (liveloadComms) {
+	liveloadComms.onmessage = function (evt) {
+		var message = JSON.parse(evt.data);
+		if (message.location) {
+			console.log()
+		}
+	};
+	
+	// inform the UI
+	liveloadComms.onopen = function(evt) {
+		console.log("websocket connection open");
+	}
+	
+	// inform the UI
+	liveloadComms.onerror = function(evt) {
+		console.log("websocket connection failed");
+		console.log(evt);
+	}
+	
+	// inform the UI
+	liveloadComms.onclose = function(evt) {
+		console.log("websocket connection closed");
+		liveloadComms = null;
+	}
+}
+</script>
+</body>
+</html>

@@ -12,7 +12,7 @@ import java.util.TimerTask;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.bluemini.websockets.handlers.SWSSHandler;
+import com.bluemini.websockets.server.SWSSHandler;
 import com.bluemini.websockets.server.WSRequest;
 import com.bluemini.websockets.server.WSResponse;
 
